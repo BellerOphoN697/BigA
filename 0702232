@@ -1,0 +1,23 @@
+package main
+
+import (
+	"os"
+
+	qrcode "github.com/skip2/go-qrcode"
+)
+
+func main() {
+	// data to be encoded in the QR code
+	data := "https://www.example.com"
+
+	// create the QR code
+	err := qrcode.WriteFile(data, qrcode.Medium, 256, "qr.png")
+	if err != nil {
+		os.Exit(1)
+	}
+}
+
+
+
+
+//This code creates a QR code image from the string "https://www.example.com" and saves it to a file named qr.png. The qrcode.WriteFile function takes four arguments: the data to be encoded, the error correction level (qrcode.Medium in this case), the size of the image in pixels, and the filename.
