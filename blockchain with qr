@@ -1,0 +1,103 @@
+import hashlib
+import uuid
+import qrcode
+
+class Block:
+    def __init__(self, product_details, previous_hash):
+        self.product_details = product_details
+        self.previous_hash = previous_hash
+        self.hash = self.calculate_hash()
+
+    def calculate_hash(self):
+        sha = hashlib.sha256()
+        sha.update(str(self.product_details).encode('utf-8') + str(self.previous_hash).encode('utf-8'))
+        return sha.hexdigest()
+
+class Blockchain:
+    def __init__(self):
+        self.chain = [self.create_genesis_block()]
+
+    def create_genesis_block(self):
+        return Block("Genesis Block", "0")
+
+    def add_block(self, new_block):
+        new_block.previous_hash = self.chain[-1].hash
+        new_block.hash = new_block.calculate_hash()
+        self.chain.append(new_block)
+
+    def is_chain_valid(self):
+        for i in range(1, len(self.chain)):
+            current_block = self.chain[i]
+            previous_block = self.chain[i-1]
+            if current_block.hash != current_block.calculate_hash():
+                return False
+            if current_block.previous_hash != previous_block.hash:
+                return False
+        return True
+class Product:
+    def __init__(self, name, description, price, unique_id,manufacturer,mfd,mid):
+        self.name = name
+        self.description = description
+        self.price = price
+        self.unique_id = unique_id
+        self.manufacturer = manufacturer
+        self.mfd = mfd
+        self.mid = mid
+ 
+class ProductDatabase:
+    def __init__(self):
+        self.products = []
+        self.counter = 1
+
+    def add_product(self):
+        name = input("Enter product name: ")
+        description = input("Enter product description: ")
+        price = float(input("Enter product price: "))
+        unique_id = uuid.uuid1()
+        manufacturer = input("Enter the manufacturer name")
+        mfd = input("Enter manufactured date")
+        mid = uuid.uuid1()
+        product = Product(name, description, price, unique_id,manufacturer,mfd,mid)
+        self.products.append(product)
+        
+
+    def display_products(self):
+        if not self.products:
+            print("No products found.")
+            return
+
+        print("ID\t\t\t\t\tName\tDescription\tPrice\tManufacturer\tManufactured date\tManufacturer Unique ID")
+        for product in self.products:
+            
+            print(f"{product.unique_id}\t{product.name}\t{product.description}\t{product.price}\t{product.manufacturer}\t\t{product.mfd}\t\t{product.mid}")
+            img = qrcode.make ("ID\t\t\t\t\tName\tDescription\tPrice\tManufacturer\tManufactured date\tManufacturer Unique ID \n "f"{product.unique_id}\t{product.name}\t{product.description}\t{product.price}\t{product.manufacturer}\t\t{product.mfd}\t\t{product.mid}")
+            img.save('Product.png')
+
+blockchain = Blockchain()
+
+database = ProductDatabase()
+while True:
+    print("1. Add product details")
+    print("2. View all products")
+    print("3. Exit")
+
+    choice = int(input("Enter your choice: "))
+    if choice == 1:
+        database.add_product()
+    elif choice == 2:
+        database.display_products()
+    elif choice == 3:
+        break
+    else:
+        print("Invalid choice. Please try again.")
+
+
+
+print("Is Blockchain Valid? ", blockchain.is_chain_valid())
+
+for block in blockchain.chain:
+    print("Previous Hash: ", block.previous_hash)
+    print("Current Hash: ", block.hash)
+    print("\n")
+
+
