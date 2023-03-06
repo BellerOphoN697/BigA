@@ -1,0 +1,63 @@
+import hashlib
+import uuid
+import qrcode
+import sqlite3
+
+
+class Product:
+    def __init__(self, name, description, price, unique_id,manufacturer,mfd,mid):
+        self.name = name
+        self.description = description
+        self.price = price
+        self.unique_id = unique_id
+        self.manufacturer = manufacturer
+        self.mfd = mfd
+        self.mid = mid
+
+class ProductDatabase:
+    while True:
+        print("1. Add product details")
+        print("2. View all products")
+        print("3. Exit")
+        choice = int(input("Enter your choice: "))
+        if choice == 1:
+
+            conn = sqlite3.connect('product_details.db')
+            cursor = conn.cursor()
+            cursor.execute('''CREATE TABLE IF NOT EXISTS product_details (
+                        unique_id VARCHAR PRIMARY KEY,
+                        name TEXT,
+                        description TEXT,
+                        price FLOAT,
+                        manufacturer TEXT,
+                        mfd TEXT,
+                        mid VARCHAR
+                    )''')
+
+            unique_id = uuid.uuid1()
+            name = input("Enter product name: ")
+            description = input("Enter product description: ")
+            price = float(input("Enter product price: "))
+            manufacturer = input("Enter the manufacturer name")
+            mfd = input("Enter manufactured date")
+            mid = uuid.uuid1()
+            product = Product(name, description, price, unique_id,manufacturer,mfd,mid)
+            self.products.append(product)
+            cursor.execute('''INSERT INTO product_details (unique_id, name, description, price, manufacturer, mfd, mid ) VALUES (?, ?, ?, ?, ?, ?, ?)''', (unique_id, name, description, price,manufacturer, mfd, mid))
+
+            
+            
+        elif choice == 2:
+            cursor.execute('''SELECT * FROM user_details''')
+            rows = cursor.fetchall()
+            for row in rows:
+                print(row)
+                img = qrcode.make (row)
+                img.save('Product.png')
+        elif choice == 3:
+                break
+        else:
+                print("Invalid choice. Please try again.")
+
+
+
