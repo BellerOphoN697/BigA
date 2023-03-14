@@ -1,6 +1,6 @@
 import hashlib
 import uuid
-import qrcode
+#import qrcode
 import sqlite3
 
 
@@ -20,62 +20,61 @@ class ProductDatabase:
         self.counter = 1
 
     def add_product(self):
-        
-        conn = sqlite3.connect('product_details.db')
-        cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS products (
-                unique_id VARCHAR(250) PRIMARY KEY,
-                name TEXT,
-                description TEXT,
-                price TEXT,
-                manufacturer TEXT,
-                mfd TEXT,
-                mid VARCHAR(250)
-            )''')
-        unique_id = str(uuid.uuid1())
-        name = input("Enter product name: ")
-        description = input("Enter product description: ")
-        price = float(input("Enter product price: "))
-        manufacturer = input("Enter the manufacturer name")
-        mfd = input("Enter manufactured date")
-        mid = str(uuid.uuid1())
-        product = Product(name, description, price, unique_id,manufacturer,mfd,mid)
-        self.products.append(product)
-        
-        cursor.execute("INSERT INTO products(unique_id, name, description, price, manufacturer, mfd, mid) VALUES (?, ?, ?, ?, ?, ?, ?)",
-               (unique_id, name, description, price, manufacturer, mfd, mid))
-        
-
-    def display_products(self):
-        conn = sqlite3.connect('product_details.db')
-        cursor = conn.cursor()
-        if not self.products:
-            print("No products found.")
-            return
-        
-        data = cursor.execute("SELECT * FROM products")
-        rows = cursor.fetchall()
-        for row in rows:
-           print(row)
-        print(cursor.fetchall())
-        img = qrcode.make (data)
-        img.save('Product.png')
+        while True:
+            print("1. Add product details")
+            print("2. View all products")
+            print("3. Exit")
+            choice = int(input("Enter your choice: "))
+            if choice == 1:
+           
+                conn = sqlite3.connect('product_details.db')
+                cursor = conn.cursor()
+                cursor.execute('''CREATE TABLE IF NOT EXISTS products (
+                        unique_id VARCHAR(250) PRIMARY KEY,
+                        name TEXT,
+                        description TEXT,
+                        price TEXT,
+                        manufacturer TEXT,
+                        mfd TEXT,
+                        mid VARCHAR(250)
+                    )''')
+                unique_id = str(uuid.uuid1())
+                name = input("Enter product name: ")
+                description = input("Enter product description: ")
+                price = float(input("Enter product price: "))
+                manufacturer = input("Enter the manufacturer name")
+                mfd = input("Enter manufactured date")
+                mid = str(uuid.uuid1())
+                product = Product(name, description, price, unique_id,manufacturer,mfd,mid)
+                self.products.append(product)
+               
+                cursor.execute("INSERT INTO products(unique_id, name, description, price, manufacturer, mfd, mid) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                       (unique_id, name, description, price, manufacturer, mfd, mid))
 
 
-#blockchain = Blockchain()
+            elif choice == 2:
+                cursor.execute("SELECT * FROM products")
+                rows = cursor.fetchall();
+                print(rows)
+            elif choice == 3:
+                    break
+            else:
+                    print("Invalid choice. Please try again.")
+ 
+           
+            #for row in rows:
+               #print(row)
+            #print(cursor.fetchall())
+            #img = qrcode.make (data)
+            #img.save('Product.png')
+       
+       
+
+    #blockchain = Blockchain()
 database = ProductDatabase()
 while True:
-        print("1. Add product details")
-        print("2. View all products")
-        print("3. Exit")
-        choice = int(input("Enter your choice: "))
-        if choice == 1:
-            database.add_product()
-        elif choice == 2:
-            database.display_products()
-        elif choice == 3:
-            break
-        else:
-            print("Invalid choice. Please try again.")
-
-
+    a= int(input("Press 1 to start"))
+    if a==1:
+        database.add_product()
+    else:
+        print("error")
