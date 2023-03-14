@@ -1,6 +1,6 @@
 import hashlib
 import uuid
-#import qrcode
+import qrcode
 import sqlite3
 
 
@@ -55,7 +55,10 @@ class ProductDatabase:
             elif choice == 2:
                 cursor.execute("SELECT * FROM products")
                 rows = cursor.fetchall();
+                print("ID\t\t\t\t\tName\tDescription\tPrice\tManufacturer\tManufactured date\tManufacturer Unique ID")
                 print(rows)
+                img = qrcode.make ("ID\t\t\t\t\tName\tDescription\tPrice\tManufacturer\tManufactured date\tManufacturer Unique ID \n "f"{product.unique_id}\t{product.name}\t{product.description}\t{product.price}\t{product.manufacturer}\t\t{product.mfd}\t\t{product.mid}")
+                img.save('Product.png')
             elif choice == 3:
                     break
             else:
@@ -65,16 +68,17 @@ class ProductDatabase:
             #for row in rows:
                #print(row)
             #print(cursor.fetchall())
-            #img = qrcode.make (data)
-            #img.save('Product.png')
+            
        
        
 
     #blockchain = Blockchain()
 database = ProductDatabase()
 while True:
-    a= int(input("Press 1 to start"))
+    a= int(input("Press 1 to start or press 0 to stop"))
     if a==1:
         database.add_product()
+    elif a==0:
+        break
     else:
         print("error")
